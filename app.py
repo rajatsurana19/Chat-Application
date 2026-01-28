@@ -159,8 +159,63 @@ html = """
   </div>
 </div>
 
+<script>
+  let socket;
+  let username;
+
+  const messages = document.getElementById("messages");
+  const messageInput = document.getElementById("messageInput");
+
+  function connect() {
+    username = document.getElementById("usernameInput").value.trim();
+    if (!username) return;
+
+    document.getElementById("usernameModal").style.display = "none";
+
+    socket = new WebSocket("ws://localhost:8000/ws");
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      addMessage(data.username, data.message);
+    };
+  }
+
+  function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text || !socket) return;
+
+    socket.send(JSON.stringify({
+      username: username,
+      message: text
+    }));
+
+    messageInput.value = "";
+  }
+
+  function addMessage(sender, text) {
+    const msg = document.createElement("div");
+    msg.className = "message " + (sender === username ? "me" : "other");
+
+    const name = document.createElement("div");
+    name.className = "username";
+    name.textContent = sender;
+
+    const body = document.createElement("div");
+    body.textContent = text;
+
+    msg.appendChild(name);
+    msg.appendChild(body);
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  messageInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
 
 </body>
+
 </html>
 
 
