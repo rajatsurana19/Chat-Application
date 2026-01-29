@@ -9,7 +9,9 @@ app.config["SECRET_KEY"] = "rajatschatapp"
 
 socektio = SocketIO(app)
 
-
+@app.route("/",method=["POST","GET"])
+def home():
+    return render_template("home.html")
 
 if __name__ == "__main__":
     socektio.run(app,debug=True)
