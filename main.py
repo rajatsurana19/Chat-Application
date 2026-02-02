@@ -42,9 +42,11 @@ def home():
         elif code not in rooms:
             return render_template("home.html",error="Room does not exist")
 
-
-
     return render_template("home.html")
+
+@app.route("/room")
+def room():
+    return render_template("room.html")
 
 if __name__ == "__main__":
     socektio.run(app,debug=True)
